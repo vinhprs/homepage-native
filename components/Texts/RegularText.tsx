@@ -5,8 +5,8 @@ import { TextProps } from "./types";
 const RegularText: FC<TextProps> = ({ textStyles, children }) => {
   return (
     <Text
-      style={{ fontFamily: "Lato-Bold" }}
-      className={`text-left text-[15px] text-white ${textStyles}`}
+      style={{ fontFamily: "Lato-Regular" }}
+      className={`text-center text-[15px] text-white  ${textStyles}`}
     >
       {children}
     </Text>

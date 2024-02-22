@@ -6,7 +6,7 @@ const SmallText: FC<TextProps> = ({ textStyles, children }) => {
   return (
     <Text
       style={{ fontFamily: "Lato-Regular" }}
-      className={`text-left text-[13px] text-gray ${textStyles}`}
+      className={`text-center text-[13px] text-gray ${textStyles}`}
     >
       {children}
     </Text>
