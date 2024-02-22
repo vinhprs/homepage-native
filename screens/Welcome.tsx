@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { StatusBar } from "expo-status-bar";
 
 // background image
-import background from "./../assets/bgs/background_v1.png";
+import background from "./../assets/bgs/background_1.png";
 
 // components
 import SmallText from "../components/Texts/SmallText";
@@ -20,8 +20,8 @@ const Welcome: FC<Props> = ({ navigation }) => {
   return (
     <>
       <StatusBar style="light" />
-      <View className="h-full w-full justify-between bg-secondary">
-        <View className="max-h-[55%] w-full flex-1">
+      <View className="h-full w-full justify-between bg-[#1F1F39]">
+        <View className="h-[260] w-[260]">
           <Image
             source={background}
             resizeMode="stretch"
@@ -30,10 +30,11 @@ const Welcome: FC<Props> = ({ navigation }) => {
         </View>
         <View className="w-full flex-1 justify-end p-[25px]">
           <BigText textStyles="mb-[25px] w-[70%]">
-            Best way to track your money
+            Chào mừng đến với PrimeEdu
           </BigText>
           <SmallText textStyles="mb-[25px] w-[70%]">
-            Best payment method, connects your money to your friends and family.
+            Tất cả khóa học này đều dành cho các bạn, giúp các bạn nâng cao kiến
+            thức cùng với các giảng viên đầy kinh nghiệm
           </SmallText>
           <RegularButton
             onPress={() => {
