@@ -22,7 +22,7 @@ const RegularButton: FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`w-full items-center rounded-[20px] bg-primary p-5 ${btnStyles}`}
+      className={`items-center rounded-[20px] bg-primary p-5 ${btnStyles}`}
     >
       <RegularText textStyles={textStyles}>{children}</RegularText>
     </TouchableOpacity>
