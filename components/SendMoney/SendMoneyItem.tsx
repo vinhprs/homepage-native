@@ -11,6 +11,9 @@ import Profile from "../Header/Profile";
 
 // types
 import { SendMoneyProp } from "./types";
+import { styled } from "nativewind";
+
+const StyledTouchableHighlight = styled(TouchableHighlight);
 
 const SendMoneyItem: FC<SendMoneyProp> = ({
   name,
@@ -19,7 +22,7 @@ const SendMoneyItem: FC<SendMoneyProp> = ({
   image,
 }) => {
   return (
-    <TouchableHighlight
+    <StyledTouchableHighlight
       underlayColor="#2C365A"
       style={{ width: ScreenWidth * 0.27, backgroundColor: background }}
       onPress={() => {
@@ -36,7 +39,7 @@ const SendMoneyItem: FC<SendMoneyProp> = ({
           {amount}
         </RegularText>
       </>
-    </TouchableHighlight>
+    </StyledTouchableHighlight>
   );
 };
 

@@ -1,15 +1,14 @@
 import { FlatList } from "react-native-gesture-handler";
 import React, { FC } from "react";
-
-// components
 import CardItem from "./CardItem";
-
-// types
 import { CardSectionProps } from "./types";
+import { styled } from "nativewind";
+
+const StyledFlatList = styled(FlatList);
 
 const CardSection: FC<CardSectionProps> = ({ data }) => {
   return (
-    <FlatList
+    <StyledFlatList
       className="w-full flex-1 pb-[15px] pl-[25px]"
       data={data}
       horizontal={true}

@@ -1,17 +1,16 @@
 import { View } from "react-native";
 import React, { FC } from "react";
-
-// components
 import BalanceCard from "./BalanceCard";
-
-// types
 import { BalanceCardProps } from "./types";
+import { styled } from "nativewind";
+
+const StyledView = styled(View);
 
 const BalanceCardSection: FC<BalanceCardProps> = (props) => {
   return (
-    <View className="w-full flex-[2] items-center">
+    <StyledView className="w-full flex-[2] items-center">
       <BalanceCard {...props} />
-    </View>
+    </StyledView>
   );
 };
 

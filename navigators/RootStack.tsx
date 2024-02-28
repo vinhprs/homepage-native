@@ -25,6 +25,7 @@ export type RootStackParamList = {
   Welcome: undefined;
   Home: undefined;
   Balance: CardProps;
+  Register: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

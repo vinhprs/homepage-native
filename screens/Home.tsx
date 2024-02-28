@@ -15,17 +15,20 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { cardsData } from "./data/cardsData";
 import { transactionData } from "./data/transactionData";
 import { sendMoneyData } from "./data/sendMoneyData";
+import { styled } from "nativewind";
 
 export type Props = StackScreenProps<RootStackParamList, "Home">;
 
+const StyledView = styled(View);
+
 const Home: FC<Props> = () => {
   return (
-    <View className="w-full flex-1 bg-graylight">
+    <StyledView className="w-full flex-1 bg-graylight">
       <StatusBar style="dark" />
       <CardSection data={cardsData} />
       <TransactionSection data={transactionData} />
       <SendMoneySection data={sendMoneyData} />
-    </View>
+    </StyledView>
   );
 };
 
