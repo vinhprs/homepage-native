@@ -16,9 +16,13 @@ const { width, height } = Dimensions.get("screen");
 const StyledView = styled(View);
 const SlideItem: FC<SlideItemProp> = ({ item }) => {
   const navigation = useNavigation<any>();
-  const handlePress = () => {
-    navigation.navigate("Balance", {});
+  const handleLoginPress = () => {
+    navigation.navigate("Login", {});
   };
+
+  const handleRegisPress = () => {
+    navigation.navigate("Register", {})
+  }
 
   return (
     <StyledView style={styles.container}>
@@ -41,11 +45,11 @@ const SlideItem: FC<SlideItemProp> = ({ item }) => {
 
       {item.id == 3 && (
         <StyledView style={styles.authen}>
-          <Pressable style={styles.signUpButton} onPress={handlePress}>
+          <Pressable style={styles.signUpButton} onPress={handleRegisPress}>
             <Text style={styles.signUPText}>Đăng kí</Text>
           </Pressable>
           <Pressable style={styles.signInButton}>
-            <Text style={styles.signInText}>Đăng nhập</Text>
+            <Text style={styles.signInText} onPress={handleLoginPress}>Đăng nhập</Text>
           </Pressable>
         </StyledView>
       )}
