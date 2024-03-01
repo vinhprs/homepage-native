@@ -5,7 +5,7 @@ import Welcome from "../screens/Welcome";
 import Home from "../screens/Home";
 import Balance from "../screens/Balance";
 import Login from "../screens/Login";
-import Register from "../screens/Register"
+import Register from "../screens/Register";
 
 // react navigation
 import { NavigationContainer } from "@react-navigation/native";
@@ -27,7 +27,8 @@ export type RootStackParamList = {
   Welcome: undefined;
   Home: undefined;
   Balance: CardProps;
-  Login:  undefined;
+  Login: undefined;
+  Register: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -94,14 +95,8 @@ const RootStack: FC = () => {
             },
           })}
         />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-        />
-        <Stack.Screen
-          name="Register"
-          component={Register}
-        />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );
