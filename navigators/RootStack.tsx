@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import Welcome from "../screens/Welcome";
 import Home from "../screens/Home";
 import Balance from "../screens/Balance";
+import SignIn from "../screens/SignIn";
 
 // react navigation
 import { NavigationContainer } from "@react-navigation/native";
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   Home: undefined;
   Balance: CardProps;
   Register: undefined;
+  SignIn:CardProps;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -76,6 +78,25 @@ const RootStack: FC = () => {
         <Stack.Screen
           name="Balance"
           component={Balance}
+          options={({ route }) => ({
+            headerTitle: route?.params?.alias,
+            headerTitleAlign: "center",
+            headerBackImage: (props) => (
+              <Ionicons
+                {...props}
+                name="chevron-back"
+                size={25}
+                color="#2C365A"
+              />
+            ),
+            headerLeftContainerStyle: {
+              paddingLeft: 0,
+            },
+          })}
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={SignIn}
           options={({ route }) => ({
             headerTitle: route?.params?.alias,
             headerTitleAlign: "center",

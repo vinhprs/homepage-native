@@ -19,7 +19,9 @@ const SlideItem: FC<SlideItemProp> = ({ item }) => {
   const handlePress = () => {
     navigation.navigate("Balance", {});
   };
-
+  const handlePressSignIn=()=>{
+    navigation.navigate("SignIn",{})
+  }
   return (
     <StyledView style={styles.container}>
       {item.id == 3 && (
@@ -44,7 +46,7 @@ const SlideItem: FC<SlideItemProp> = ({ item }) => {
           <Pressable style={styles.signUpButton} onPress={handlePress}>
             <Text style={styles.signUPText}>Đăng kí</Text>
           </Pressable>
-          <Pressable style={styles.signInButton}>
+          <Pressable style={styles.signInButton} onPress={handlePressSignIn}>
             <Text style={styles.signInText}>Đăng nhập</Text>
           </Pressable>
         </StyledView>
