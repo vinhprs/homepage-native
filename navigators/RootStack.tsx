@@ -20,6 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 // for balance screen
 import { CardProps } from "../components/Cards/types";
+import { Provider } from "react-redux";
+import { store } from "../hooks/store";
 
 // types
 export type RootStackParamList = {
@@ -34,6 +36,8 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const RootStack: FC = () => {
   return (
+    <Provider store={store}>
+
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Welcome"
@@ -115,6 +119,7 @@ const RootStack: FC = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 };
 

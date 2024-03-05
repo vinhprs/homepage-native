@@ -1,173 +1,175 @@
-// import { LocalStorage } from '../../utils/LocalStorage';
-// import axios, { AxiosResponse } from 'axios';
 
-// // const getTokenExpiration = (token: any) => {
-// //   console.log(typeof token);
+import { LocalStorage } from '../../utils/Storage';
+import axios, { AxiosResponse } from 'axios';
 
-// //   const decodedToken = jwtDecode(token) || {};
-// //   return (decodedToken.exp ?? 0) * 1000; // Convert seconds to milliseconds
-// // };
+// const getTokenExpiration = (token: any) => {
+//   console.log(typeof token);
 
-// const defaultHeader = {
-//   'Access-Control-Allow-Origin': '*',
-//   'Content-Type': 'application/json',
-//   'Accept': 'application/json',
-// };
-// // for multiple requests
-// let isRefreshing = false;
-// let failedQueue: any = [];
-
-// const processQueue = (error: any, token = null) => {
-//   failedQueue.forEach((prom: any) => {
-//     if (error) {
-//       prom.reject(error);
-//     } else {
-//       prom.resolve(token);
-//     }
-//   });
-
-//   failedQueue = [];
+//   const decodedToken = jwtDecode(token) || {};
+//   return (decodedToken.exp ?? 0) * 1000; // Convert seconds to milliseconds
 // };
 
-// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// // @ts-ignore
-// // const baseURL: string = process.env.REACT_API_ENDPOINT || "";
-// const baseURL: string = String(process.env.REACT_APP_API_ENDPOINT) || '';
+const defaultHeader = {
+  'Access-Control-Allow-Origin': '*',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+};
+// for multiple requests
+let isRefreshing = false;
+let failedQueue: any = [];
 
-// // Set up default config for http requests here
-// // Please have a look at here `https://github.com/axios/axios#request- config` for the full list of configs
-// const axiosClient = axios.create({
-//   baseURL: baseURL,
-// });
+const processQueue = (error: any, token = null) => {
+  failedQueue.forEach((prom: any) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
 
-// // Add a request interceptor
-// axiosClient.interceptors.request.use(
-//   (config) => {
-//     const token = LocalStorage.getAccessToken();
-//     console.log(token);
+  failedQueue = [];
+};
 
-//     if (token) {
-//       config.headers['Authorization'] = 'Bearer ' + token;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     Promise.reject(error);
-//   }
-// );
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// const baseURL: string = process.env.REACT_API_ENDPOINT || "";
+const baseURL: string = "https://staging.primeedu.io.vn/api/v1";
 
-// //Add a response interceptor
-// axiosClient.interceptors.response.use(
-//   (response) => {
-//     return handleResponse(response);
-//   },
-//   async (error) => {
-//     const originalRequest = error.config;
+// Set up default config for http requests here
+// Please have a look at here `https://github.com/axios/axios#request- config` for the full list of configs
+const axiosClient = axios.create({
+  baseURL: baseURL,
+});
 
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       if (isRefreshing) {
-//         try {
-//           const token = await new Promise(function (resolve, reject) {
-//             failedQueue.push({ resolve, reject });
-//           });
-//           originalRequest.headers['Authorization'] = 'Bearer ' + token;
-//           return await axiosClient.request(originalRequest);
-//         } catch (err) {
-//           return await Promise.reject(err);
-//         }
-//       }
+// Add a request interceptor
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = LocalStorage.getAccessToken();
+    console.log(token); 
 
-//       originalRequest._retry = true;
-//       isRefreshing = true;
+    if (token) {
+      config.headers['Authorization'] = 'Bearer ' + token;
+    }
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
 
-//       const refreshToken = LocalStorage.getRefreshToken();
+//Add a response interceptor
+axiosClient.interceptors.response.use(
+  (response) => {
+    return handleResponse(response);
+  },
+  async (error) => {
+    const originalRequest = error.config;
+    console.log(error.response)
+    if (error.response.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        try {
+          const token = await new Promise(function (resolve, reject) {
+            failedQueue.push({ resolve, reject });
+          });
+          originalRequest.headers['Authorization'] = 'Bearer ' + token;
+          return await axiosClient.request(originalRequest);
+        } catch (err) {
+          return await Promise.reject(err);
+        }
+      }
 
-//       return new Promise(function (resolve, reject) {
-//         axios
-//           .post(
-//             `${process.env.REACT_APP_API_ENDPOINT}/auth/refresh-token`,
-//             { refreshToken },
-//             {
-//               headers: {
-//                 ...defaultHeader,
-//                 Authorization: 'Bearer ' + LocalStorage.getAccessToken(),
-//               },
-//             }
-//           )
-//           .then((res) => {
-//             const { data } = res.data;
+      originalRequest._retry = true;
+      isRefreshing = true;
 
-//             // 1) put token to LocalStorage
-//             LocalStorage.setToken(data);
+      const refreshToken = LocalStorage.getRefreshToken();
 
-//             // 2) Change Authorization header
-//             axios.defaults.headers.common['Authorization'] =
-//               'Bearer ' + data.accessToken;
-//             originalRequest.headers['Authorization'] =
-//               'Bearer ' + data.accessToken;
+      return new Promise(function (resolve, reject) {
+        axios
+          .post(
+            `${process.env.REACT_APP_API_ENDPOINT}/auth/refresh-token`,
+            { refreshToken },
+            {
+              headers: {
+                ...defaultHeader,
+                Authorization: 'Bearer ' + LocalStorage.getAccessToken(),
+              },
+            }
+          )
+          .then((res) => {
+            const { data } = res.data;
 
-//             processQueue(null, data.accessToken);
+            // 1) put token to LocalStorage
+            LocalStorage.setToken(data);
 
-//             // 3) return originalRequest object with Axios
-//             resolve(axiosClient.request(originalRequest));
-//           })
-//           .catch((err) => {
-//             const { status, data } = err.response;
+            // 2) Change Authorization header
+            axios.defaults.headers.common['Authorization'] =
+              'Bearer ' + data.accessToken;
+            originalRequest.headers['Authorization'] =
+              'Bearer ' + data.accessToken;
 
-//             if (status === 404) {
-//               // console.log("err.status === 404")
-//               clearAuthToken();
-//             }
-//             if (data && data.error === true) {
-//               clearAuthToken();
-//             }
+            processQueue(null, data.accessToken);
 
-//             processQueue(err, null);
-//             reject(err);
-//           })
-//           .finally(() => {
-//             isRefreshing = false;
-//             LocalStorage.clearToken();
-//           });
-//       });
-//     }
-//     // const tokenExpiration = getTokenExpiration(
-//     //   LocalStorage.getAccessToken()?.toString()
-//     // );
-//     // const currentTime = new Date().getTime();
-//     // console.log("🚀 ~ file: axiosClient.ts:182 ~ currentTime:", currentTime);
+            // 3) return originalRequest object with Axios
+            resolve(axiosClient.request(originalRequest));
+          })
+          .catch((err) => {
+            const { status, data } = err.response;
 
-//     // if (tokenExpiration && tokenExpiration < currentTime) {
-//     //   // Token is expired, refresh it
-//     //   refreshTokenAndRetry(originalRequest);
-//     // } else {
-//     //   // Token is still valid, refresh after 5 minutes
-//     //   const refreshTimeout = tokenExpiration - currentTime - 5 * 60 * 1000;
-//     //   setTimeout(refreshTokenAndRetry, refreshTimeout);
-//     // }
+            if (status === 404) {
+              // console.log("err.status === 404")
+              clearAuthToken();
+            }
+            if (data && data.error === true) {
+              clearAuthToken();
+            }
 
-//     return Promise.reject(handleError(error));
-//   }
-// );
+            processQueue(err, null);
+            reject(err);
+          })
+          .finally(() => {
+            isRefreshing = false;
+            LocalStorage.clearToken();
+          });
+      });
+    }
+    // const tokenExpiration = getTokenExpiration(
+    //   LocalStorage.getAccessToken()?.toString()
+    // );
+    // const currentTime = new Date().getTime();
+    // console.log("🚀 ~ file: axiosClient.ts:182 ~ currentTime:", currentTime);
 
-// const handleResponse = (res: AxiosResponse<any>) => {
-//   if (res && res.data) {
-//     return res.data;
-//   }
+    // if (tokenExpiration && tokenExpiration < currentTime) {
+    //   // Token is expired, refresh it
+    //   refreshTokenAndRetry(originalRequest);
+    // } else {
+    //   // Token is still valid, refresh after 5 minutes
+    //   const refreshTimeout = tokenExpiration - currentTime - 5 * 60 * 1000;
+    //   setTimeout(refreshTokenAndRetry, refreshTimeout);
+    // }
 
-//   return res;
-// };
+    return Promise.reject(handleError(error));
+  }
+);
 
-// const handleError = (error: { response: { data: any } }) => {
-//   const { data } = error.response;
+const handleResponse = (res: AxiosResponse<any>) => {
+  if (res && res.data) {
+    console.log(res)
+    return res.data;
+  }
 
-//   console.error(error);
+  return res;
+};
 
-//   return data;
-// };
+const handleError = (error: { response: { data: any } }) => {
+  const { data } = error.response;
 
-// const clearAuthToken = () => {
-//   LocalStorage.clearToken();
-// };
+  console.error(error);
 
-// export default axiosClient;
+  return data;
+};
+
+const clearAuthToken = () => {
+  LocalStorage.clearToken();
+};
+
+export default axiosClient;

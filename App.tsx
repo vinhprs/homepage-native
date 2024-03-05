@@ -6,6 +6,8 @@ import RootStack from "./navigators/RootStack";
 // custom fonts
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
+import { Provider } from "react-redux";
+import { store } from "./hooks/store";
 
 export default function App() {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -39,4 +41,5 @@ export default function App() {
   }
 
   return <RootStack />;
+  
 }
